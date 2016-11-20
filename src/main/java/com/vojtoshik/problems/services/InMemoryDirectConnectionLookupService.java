@@ -2,23 +2,21 @@ package com.vojtoshik.problems.services;
 
 import com.vojtoshik.problems.models.BusRoute;
 
-import javax.inject.Named;
 import java.util.*;
 
 /**
  * @author Anton Voitovych <vojtoshik@gmail.com>
  */
-@Named
 public class InMemoryDirectConnectionLookupService implements DirectConnectionLookupService {
 
     private Map<Integer, List<Integer>> stopsToRoutesList = new HashMap<>();
 
-    public InMemoryDirectConnectionLookupService(List<BusRoute> busRoutesList) {
+    public InMemoryDirectConnectionLookupService(Iterator<BusRoute> busRoutesList) {
 
-        busRoutesList.stream().forEach((busRoute) ->
-            busRoute.getRouteStopsList()
-                    .stream()
-                    .forEach((stopId) -> addRouteToBusStop(stopId, busRoute.getBusRouteId()))
+        busRoutesList.forEachRemaining(
+                busRoute -> busRoute.getRouteStopsList()
+                        .stream()
+                        .forEach((stopId) -> addRouteToBusStop(stopId, busRoute.getBusRouteId()))
         );
 
         stopsToRoutesList.forEach((stopId, routesList) -> Collections.sort(routesList));

@@ -26,7 +26,7 @@ public class InMemoryDirectConnectionLookupServiceTest {
                 new BusRoute(200, Arrays.asList(8, 9))
         );
 
-        systemUnderTest = new InMemoryDirectConnectionLookupService(routes);
+        systemUnderTest = new InMemoryDirectConnectionLookupService(routes.iterator());
     }
 
     @Test
