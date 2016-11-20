@@ -1,13 +1,9 @@
 package com.vojtoshik.problems.services;
 
+import com.vojtoshik.problems.models.BusRoute;
+
 import javax.inject.Named;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Anton Voitovych <vojtoshik@gmail.com>
@@ -17,11 +13,15 @@ public class InMemoryDirectConnectionLookupService implements DirectConnectionLo
 
     private Map<Integer, List<Integer>> stopsToRoutesList = new HashMap<>();
 
-    public InMemoryDirectConnectionLookupService() {
-        stopsToRoutesList.put(1, Arrays.asList(100, 110, 190));
-        stopsToRoutesList.put(2, Arrays.asList(120, 130, 140, 150, 160, 170, 180));
-        stopsToRoutesList.put(3, Arrays.asList(120, 140));
-        stopsToRoutesList.put(4, Arrays.asList(140, 150));
+    public InMemoryDirectConnectionLookupService(List<BusRoute> busRoutesList) {
+
+        busRoutesList.stream().forEach((busRoute) ->
+            busRoute.getRouteStopsList()
+                    .stream()
+                    .forEach((stopId) -> addRouteToBusStop(stopId, busRoute.getBusRouteId()))
+        );
+
+        stopsToRoutesList.forEach((stopId, routesList) -> Collections.sort(routesList));
     }
 
     public boolean lookup(int departureBusStopId, int arrivalBusStopId) {
@@ -37,6 +37,14 @@ public class InMemoryDirectConnectionLookupService implements DirectConnectionLo
                 .findFirst();
 
         return result.isPresent();
+    }
+
+    private void addRouteToBusStop(Integer stopId, int busRouteId) {
+        if (!stopsToRoutesList.containsKey(stopId)) {
+            stopsToRoutesList.put(stopId, new ArrayList<>());
+        }
+
+        stopsToRoutesList.get(stopId).add(busRouteId);
     }
 
     private List<Integer> getSmallerRoutesList(int busStopA, int busStopB) {
