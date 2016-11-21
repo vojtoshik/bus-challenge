@@ -19,8 +19,8 @@ public class DirectConnectionSearchController {
     private DirectConnectionLookupService lookupService;
 
     @RequestMapping(method = RequestMethod.GET, path = "/api/direct", params = {"dep_sid", "arr_sid"})
-    public SearchResultResponse findConnection(@RequestParam("dep_sid") int departureLocationId,
-                                               @RequestParam("arr_sid") int arrivalLocationId) {
+    public SearchResultResponse checkIfDirectConnectionExists(@RequestParam("dep_sid") int departureLocationId,
+                                                              @RequestParam("arr_sid") int arrivalLocationId) {
 
         boolean directConnectionExists = lookupService.checkIfConnectionExists(departureLocationId, arrivalLocationId);
         return new SearchResultResponse(departureLocationId, arrivalLocationId, directConnectionExists);

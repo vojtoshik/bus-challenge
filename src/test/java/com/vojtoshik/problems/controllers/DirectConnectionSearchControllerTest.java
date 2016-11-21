@@ -37,7 +37,7 @@ public class DirectConnectionSearchControllerTest {
                 .thenReturn(serviceReply);
 
         SearchResultResponse response = systemUnderTest
-                .findConnection(inputDepartureLocationId, inputArrivalLocationId);
+                .checkIfDirectConnectionExists(inputDepartureLocationId, inputArrivalLocationId);
 
         assertEquals(serviceReply, response.hasDirectConnection());
         assertEquals(inputDepartureLocationId, response.getDepartureLocationId());
