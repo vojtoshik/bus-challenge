@@ -2,11 +2,13 @@ package com.vojtoshik.problems.services;
 
 import com.vojtoshik.problems.models.BusRoute;
 
+import javax.inject.Named;
 import java.util.*;
 
 /**
  * @author Anton Voitovych <vojtoshik@gmail.com>
  */
+@Named
 public class InMemoryDirectConnectionLookupService implements DirectConnectionLookupService {
 
     private Map<Integer, List<Integer>> stopsToRoutesList = new HashMap<>();
