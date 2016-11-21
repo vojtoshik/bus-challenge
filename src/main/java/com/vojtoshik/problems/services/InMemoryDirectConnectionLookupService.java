@@ -24,13 +24,13 @@ public class InMemoryDirectConnectionLookupService implements DirectConnectionLo
         stopsToRoutesList.forEach((stopId, routesList) -> Collections.sort(routesList));
     }
 
-    public boolean lookup(int departureBusStopId, int arrivalBusStopId) {
-        if (!stopsToRoutesList.containsKey(departureBusStopId) || !stopsToRoutesList.containsKey(arrivalBusStopId)) {
+    public boolean checkIfConnectionExists(int busStopA, int busStopB) {
+        if (!stopsToRoutesList.containsKey(busStopA) || !stopsToRoutesList.containsKey(busStopB)) {
             return false;
         }
 
-        List<Integer> routesListToIterate = getSmallerRoutesList(departureBusStopId, arrivalBusStopId);
-        List<Integer> routesListForBinarySearch = getBiggerRoutesList(departureBusStopId, arrivalBusStopId);
+        List<Integer> routesListToIterate = getSmallerRoutesList(busStopA, busStopB);
+        List<Integer> routesListForBinarySearch = getBiggerRoutesList(busStopA, busStopB);
 
         Optional<Integer> result = routesListToIterate.stream()
                 .filter((route) -> Collections.binarySearch(routesListForBinarySearch, route) >= 0)
@@ -48,19 +48,27 @@ public class InMemoryDirectConnectionLookupService implements DirectConnectionLo
     }
 
     private List<Integer> getSmallerRoutesList(int busStopA, int busStopB) {
-        return getRoute(busStopA, busStopB, (a, b) -> Integer.valueOf(b.size()).compareTo(a.size()));
+        return getRoute(busStopA, busStopB, true, (a, b) -> Integer.valueOf(b.size()).compareTo(a.size()));
     }
 
     private List<Integer> getBiggerRoutesList(int busStopA, int busStopB) {
-        return getRoute(busStopA, busStopB, (a, b) -> Integer.valueOf(a.size()).compareTo(b.size()));
+        return getRoute(busStopA, busStopB, false, (a, b) -> Integer.valueOf(a.size()).compareTo(b.size()));
     }
 
-    private List<Integer> getRoute(int busStopA, int busStopB, Comparator<List<Integer>> comparator) {
+    private List<Integer> getRoute(int busStopA,
+                                   int busStopB,
+                                   boolean onEqualLengthReturnRouteA,
+                                   Comparator<List<Integer>> comparator) {
+
         List<Integer> routesA = stopsToRoutesList.get(busStopA);
         List<Integer> routesB = stopsToRoutesList.get(busStopB);
 
-        return comparator.compare(routesA, routesB) > 0
-                ? routesA
-                : routesB;
+        int comparisonResult = comparator.compare(routesA, routesB);
+
+        if (comparisonResult == 0) {
+            return onEqualLengthReturnRouteA ? routesA : routesB;
+        }
+
+        return comparisonResult > 0 ? routesA : routesB;
     }
 }

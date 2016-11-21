@@ -33,7 +33,7 @@ public class DirectConnectionSearchControllerTest {
                                                    int inputArrivalLocationId,
                                                    boolean serviceReply) {
 
-        when(lookupServiceMock.lookup(inputDepartureLocationId, inputArrivalLocationId))
+        when(lookupServiceMock.checkIfConnectionExists(inputDepartureLocationId, inputArrivalLocationId))
                 .thenReturn(serviceReply);
 
         SearchResultResponse response = systemUnderTest

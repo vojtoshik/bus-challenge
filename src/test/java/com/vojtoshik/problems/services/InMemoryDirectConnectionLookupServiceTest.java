@@ -31,10 +31,10 @@ public class InMemoryDirectConnectionLookupServiceTest {
 
     @Test
     public void testLookupWorksAsExpected() {
-        assertTrue(systemUnderTest.lookup(3, 9));
-        assertTrue(systemUnderTest.lookup(1, 4));
-        assertTrue(systemUnderTest.lookup(9, 8));
-        assertFalse(systemUnderTest.lookup(2, 3));
-        assertFalse(systemUnderTest.lookup(4, 9));
+        assertTrue(systemUnderTest.checkIfConnectionExists(3, 9));
+        assertTrue(systemUnderTest.checkIfConnectionExists(1, 4));
+        assertTrue(systemUnderTest.checkIfConnectionExists(9, 8));
+        assertFalse(systemUnderTest.checkIfConnectionExists(2, 3));
+        assertFalse(systemUnderTest.checkIfConnectionExists(4, 9));
     }
 }

@@ -22,7 +22,7 @@ public class DirectConnectionSearchController {
     public SearchResultResponse findConnection(@RequestParam("dep_sid") int departureLocationId,
                                                @RequestParam("arr_sid") int arrivalLocationId) {
 
-        boolean directConnectionExists = lookupService.lookup(departureLocationId, arrivalLocationId);
+        boolean directConnectionExists = lookupService.checkIfConnectionExists(departureLocationId, arrivalLocationId);
         return new SearchResultResponse(departureLocationId, arrivalLocationId, directConnectionExists);
     }
 }
