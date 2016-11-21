@@ -13,6 +13,11 @@ public class InMemoryDirectConnectionLookupService implements DirectConnectionLo
 
     private Map<Integer, List<Integer>> stopsToRoutesList = new HashMap<>();
 
+    /**
+     * Constructor creates Map, where key is stopId and value is sorted list of all routes, that contain the stop
+     *
+     * @param busRoutesList
+     */
     public InMemoryDirectConnectionLookupService(Iterator<BusRoute> busRoutesList) {
 
         busRoutesList.forEachRemaining(
@@ -24,6 +29,25 @@ public class InMemoryDirectConnectionLookupService implements DirectConnectionLo
         stopsToRoutesList.forEach((stopId, routesList) -> Collections.sort(routesList));
     }
 
+    /**
+     * To find out, whether a direct connection between two bus stops (let's call them A and B) exists, the following
+     * algorithm being used:
+     *
+     * 1. Bus stop, which has less bus routes going through, detected. The routes list for this bus stop is used to
+     * iterate 1 by 1. Let's call the number of routes in the list as M
+     * 2. Bus stop, which has more bus routes going through, detected. The routes list for this bus stop is used to
+     * do binary search. Let's call the number of routes in the list as N.
+     * 3. Code iterates through the first list and tries to locate matching routeId in the second list using binary
+     * search.
+     * 4. As soon as first match found - execution interrupts and true is returned.
+     * 5. If no match found - false is returned
+     *
+     * Search complexity is M log N
+     *
+     * @param busStopA
+     * @param busStopB
+     * @return true if direct connection exist
+     */
     public boolean checkIfConnectionExists(int busStopA, int busStopB) {
         if (!stopsToRoutesList.containsKey(busStopA) || !stopsToRoutesList.containsKey(busStopB)) {
             return false;
